@@ -1,0 +1,17 @@
+{
+  "name": "encrypted-groups",
+  "dependencies": {
+    "@polymer/iron-autogrow-textarea": "^3.0.2",
+    "@polymer/iron-flex-layout": "^3.0.1",
+    "@polymer/paper-button": "^3.0.1",
+    "@polymer/paper-input": "^3.2.1",
+    "@polymer/polymer": "^3.0.0"
+  },
+  "devDependencies": {
+    "@polymer/test-fixture": "^4.0.2",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "chai": "^4.2.0",
+    "mocha": "^7.1.1",
+    "wct-mocha": "^1.0.1"
+  }
+}

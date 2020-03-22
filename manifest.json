@@ -1,0 +1,6 @@
+{
+  "name": "encrypted-groups",
+  "short_name": "encrypted-groups",
+  "start_url": "/",
+  "display": "standalone"
+}
