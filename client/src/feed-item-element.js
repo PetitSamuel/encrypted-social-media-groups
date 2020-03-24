@@ -1,5 +1,6 @@
 import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
+import '@polymer/paper-spinner/paper-spinner.js';
 
 /**
  * @customElement

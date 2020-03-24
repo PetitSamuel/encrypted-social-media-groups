@@ -26,6 +26,8 @@ services:
         environment:
             # to connect from cmd line run (read / write user) for root access use root user
             # mongo --port 27017 -u "user" -p "password" --authenticationDatabase "db"
+            # Note : it seems these don't work properly and users are set through the init script 
+            # in the volumes section.
             - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}

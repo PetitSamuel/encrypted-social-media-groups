@@ -5,6 +5,8 @@ const api_controller = require("./Routes/api")
 var db_api_controller = require('./Routes/db_api');
 require('dotenv').config()
 
+// for now not using docker for the server
+// todo : move to env vars when switching to docker container
 const SERVER_PORT = 5000;
 /*
 if (!process.env.SERVER_PORT ||
