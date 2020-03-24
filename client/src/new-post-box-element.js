@@ -1,8 +1,9 @@
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-input/paper-input.js';
+import '@polymer/paper-input/paper-textarea.js';
 import '@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js';
-
+import { responseToPostArray } from './helper/jsonToItem';
 /**
  * @customElement
  * @polymer
@@ -14,8 +15,7 @@ class NewtPostInputElement extends PolymerElement {
       #new-post-text {
         width: 35%;
         margin-bottom: 8px;
-        border: 1px solid #BDBDBD;
-        border-radius: 5px;
+        
       };
       #group-input {
         width: 35%;
@@ -25,12 +25,17 @@ class NewtPostInputElement extends PolymerElement {
         margin-bottom: 40px;
       }
       </style>
-      <iron-autogrow-textarea rows="4" id="new-post-text" placeholder="New Post" value="{{post}}"></iron-autogrow-textarea>
+      <paper-textarea label="New Post" id="new-post-text" value="{{post}}" always-float-label max-rows="4" required auto-validate error-message="Post cannot be empty!"></paper-textarea>
       <paper-input id="group-input" value="{{group}}" label="Group" always-float-label></paper-input>
       <paper-button raised on-click="clickHandler" id="new-post-button">Submit</paper-button>
       <paper-button raised on-click="loadPostsFromServer">refresh</paper-button>
     `;
   }
+  ready() {
+    super.ready();
+    this.loadPostsFromServer();
+  }
+
   static get properties() {
     return {
       post: {
@@ -48,10 +53,31 @@ class NewtPostInputElement extends PolymerElement {
       user: {
         type: String
       },
+      isLoadingPosts: {
+        type: Boolean,
+        value: false,
+      }
     };
   }
-
-  clickHandler() {
+  async loadPostsFromServer() {
+    let arr = [];
+    let res = await fetch('http://localhost:5000/api/post', {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    if (res.status !== 200) {
+      console.log(res);
+      // Do something there if a error response came from the server
+    }
+    let data = await res.json();
+    console.log(data);
+    console.log(data);
+    arr = responseToPostArray(data);
+    this.posts = arr;
+  }
+  async clickHandler() {
     // for some reason for the dom-repeat to update we need to reset posts
     let tmp = this.posts;
     tmp.push({
@@ -62,52 +88,27 @@ class NewtPostInputElement extends PolymerElement {
     this.posts = [];
     this.posts = tmp;
 
-    fetch('http://localhost:5000/api/post', {
+    let response = await fetch('http://localhost:5000/api/post', {
       method: 'POST',
-      headers: { 
-        "Content-Type": "application/json" 
+      headers: {
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-          user: this.user,
-          group: this.group,
-          text: this.post,
-        })
+        user: this.user,
+        group: this.group,
+        text: this.post,
       })
-      .then(function (response) {
-        if (response.status !== 200) {
-          console.log(response);
-          // Do something there if a error response came from the server
-        }
-        console.log(response.status);
-        // 'json()' returns a promise
-        return response.json();
-      })
-      .then(function (jsonObject) {
-        console.log(jsonObject);
-        // Do something there with the response.
-      });
+    });
+    if (response.status !== 200) {
+      console.log(response);
+      return;
+      // Do something there if a error response came from the server
+    }
+    let data = await response.json();
+    console.log(data);
   }
 
-  loadPostsFromServer() {
-    fetch('http://localhost:5000/api/post', {
-      method: 'GET',
-      headers: { 
-        "Content-Type": "application/json" 
-      }})
-      .then(function (response) {
-        if (response.status !== 200) {
-          console.log(response);
-          // Do something there if a error response came from the server
-        }
-        console.log(response.status);
-        // 'json()' returns a promise
-        return response.json();
-      })
-      .then(function (jsonObject) {
-        console.log(jsonObject);
-        // Do something there with the response.
-      });
-  }
+
 }
 
 window.customElements.define('new-post-box-element', NewtPostInputElement);
