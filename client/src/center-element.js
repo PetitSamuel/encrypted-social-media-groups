@@ -15,7 +15,6 @@ class FeedElement extends PolymerElement {
       <feed-item-element posts=[[posts]]></feed-item-element>
     `;
   }
-
   static get properties() {
     return {
       posts: {

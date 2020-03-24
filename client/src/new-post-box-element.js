@@ -28,14 +28,15 @@ class NewtPostInputElement extends PolymerElement {
       <paper-textarea label="New Post" id="new-post-text" value="{{post}}" always-float-label max-rows="4" required auto-validate error-message="Post cannot be empty!"></paper-textarea>
       <paper-input id="group-input" value="{{group}}" label="Group" always-float-label></paper-input>
       <paper-button raised on-click="clickHandler" id="new-post-button"><paper-spinner id="postingPost"></paper-spinner>Submit</paper-button>
-      <paper-button raised on-click="loadPostsFromServer"><paper-spinner id="loadingFeed"></paper-spinner>Refresh</paper-button>
-    `;
+      <paper-button raised on-click="resetAndLoad"><paper-spinner id="loadingFeed"></paper-spinner>Refresh</paper-button>
+      <paper-button raised on-click="loadPostsFromServer">Load more</paper-button>
+      <h2>Currently in group [[currentGroup]]</h2>
+      `;
   }
   ready() {
     super.ready();
-    this.loadPostsFromServer();
+    this.resetAndLoad();
   }
-
   static get properties() {
     return {
       post: {
@@ -46,6 +47,10 @@ class NewtPostInputElement extends PolymerElement {
         type: String,
         value: 'test',
       },
+      currentGroup: {
+        type: String,
+        value: '',
+      },
       posts: {
         type: Array,
         notify: true,
@@ -53,32 +58,44 @@ class NewtPostInputElement extends PolymerElement {
       user: {
         type: String
       },
+      offset: {
+        type: Number,
+        value: 0,
+      },
+      limit: {
+        type: Number,
+        value: 5,
+      }
     };
   }
+  resetAndLoad() {
+    this.offset = 0;
+    this.posts = [];
+    this.currentGroup = this.group;
+    this.loadPostsFromServer();
+  }
+
   async loadPostsFromServer() {
     this.toggleFeedLoading();
-    this.posts = [];
-
-    let res = await fetch(`http://localhost:5000/api/post/${this.group}`, {
+    let res = await fetch(`http://localhost:5000/api/post/${this.currentGroup}?limit=${this.limit}&offset=${this.offset}`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json"
       }
     });
-
     if (res.status !== 200) {
       this.toggleFeedLoading();
       alert("An error occured: " + JSON.stringify(res));
       return;
     }
-
     let data = await res.json();
+    this.offset += data.length;
     this.toggleFeedLoading();
-    this.posts = responseToPostArray(data);
+    this.posts = this.posts.concat(responseToPostArray(data));
   }
 
   // new post to local var
-  updateLocalVariables() {
+  checkLocalVariables() {
     if (!this.user) {
       alert("user field cannot be empty.");
       return false;
@@ -91,7 +108,10 @@ class NewtPostInputElement extends PolymerElement {
       alert("group field cannot be empty.");
       return false;
     }
+    return true;
+  }
 
+  updateLocalVariables() {
     let tmp = this.posts;
     // trick to force dom-repeat to re render is to assign posts a new array
     this.posts = [{
@@ -99,19 +119,16 @@ class NewtPostInputElement extends PolymerElement {
       post: this.post,
       group: this.group,
     }].concat(tmp);
-    return true;
   }
 
   async clickHandler() {
     this.togglePostingLoading();
-    let status = this.updateLocalVariables();
-
+    let status = this.checkLocalVariables();
     // not all fields are populated
     if (status === false) {
       this.togglePostingLoading();
       return;
     }
-
     // post to backend if full
     let response = await fetch('http://localhost:5000/api/post', {
       method: 'POST',
@@ -131,6 +148,7 @@ class NewtPostInputElement extends PolymerElement {
     }
     let data = await response.json();
     this.togglePostingLoading();
+    this.updateLocalVariables();
   }
 
   toggleFeedLoading() {

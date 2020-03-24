@@ -39,12 +39,22 @@ exports.post_post = async function (req, res) {
     If group is empty, return all posts.
 */
 exports.get_post = async function (req, res) {
-    let queryParam = {};
-    if (req.params.group) {
-        queryParam = { 'group': req.params.group };
+    let dbQueryParam = {};
+    let reqParams = req.params;
+    let queryParams = req.query;
+    if (reqParams.group) {
+        dbQueryParam = { 'group': reqParams.group };
+    }
+    let offset = 0;
+    let limit = 5;
+    if(queryParams.offset) {
+        offset = parseInt(req.query.offset);
+    }
+    if(queryParams.limit) {
+        limit = parseInt(req.query.limit);
     }
     try {
-        let posts = await db.PostModel.find(queryParam).sort({postedAt: 'descending'});
+        let posts = await db.PostModel.find(dbQueryParam).sort({postedAt: 'descending'}).skip(offset).limit(limit);
         res.status(200).json(posts);
         return;
     } catch (err) {

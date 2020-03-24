@@ -17,6 +17,9 @@ class FeedItemElement extends PolymerElement {
     #post-group {
         margin-left: 24px;
     }
+    #post-time-since {
+      margin-left: 24px;
+    }
     .feed-item-container {
         width: 35%;
         
@@ -41,6 +44,9 @@ class FeedItemElement extends PolymerElement {
             </div>
             <div id="post-group" >
                 [[item.group]]
+            </div>
+            <div id="post-time-since" >
+                [[item.timeSince]]
             </div>
             </div>
             <div id="post-text">
