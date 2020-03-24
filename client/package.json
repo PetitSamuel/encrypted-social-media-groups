@@ -5,7 +5,9 @@
     "@polymer/iron-flex-layout": "^3.0.1",
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-input": "^3.2.1",
-    "@polymer/polymer": "^3.0.0"
+    "@polymer/polymer": "^3.0.0",
+    "axios": "^0.19.2",
+    "paper-textarea": "^1.2.2"
   },
   "devDependencies": {
     "@polymer/test-fixture": "^4.0.2",

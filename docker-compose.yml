@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+#    server:
+#        build: ./server
+#        restart: always
+#        container_name: server
+#        ports:
+#            - "${SERVER_PORT}:${SERVER_PORT}"
+#        volumes:
+#            - ./server:/server
+#        environment:
+#            - SERVER_PORT=${SERVER_PORT}
+#            - MONGO_CONNECTION_STRING=${MONGO_CONNECTION_STRING}
+#            # script to wait for mongo to be fully up & running
+#            - WAIT_HOSTS=db:${MONGO_PORT}
+#        depends_on:
+#            - db
+#        restart: on-failure
+    db:
+        image: mongo:latest
+        volumes:
+            - $DATABASE_DATA:/$DATABASE_DATA
+            # Put the script to initialise the database in the right directory withing mongo container
+            # It will execute it on initialisation
+            - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+        environment:
+            # to connect from cmd line run (read / write user) for root access use root user
+            # mongo --port 27017 -u "user" -p "password" --authenticationDatabase "db"
+            - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+        ports:
+            - "${MONGO_PORT}:${MONGO_PORT}"
+        restart: on-failure
+        expose:
+            - ${MONGO_PORT}
