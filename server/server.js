@@ -31,11 +31,13 @@ router.get('/api/group', api_controller.get_group);
 router.post('/api/post', api_controller.post_post);
 router.post('/api/group', api_controller.post_group);
 
+router.delete('/api/group/:group/:user', api_controller.remove_group);
+
 app.use('/', router);
 
 // all other endpoints are 404s
 app.use(function (req, res, next) {
-    res.status(404).json({"error": "404 - Not Found"});
+    res.status(404).json({ "error": "404 - Not Found" });
 });
 
 app.listen(SERVER_PORT, () => console.log('Server started on ' + SERVER_PORT));

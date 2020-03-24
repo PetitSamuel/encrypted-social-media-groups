@@ -2,7 +2,7 @@ import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
 import '@polymer/paper-input/paper-input.js';
 import './center-element'
-import './add-to-group-element';
+import './group-manager-element';
 /**
  * @customElement
  * @polymer
@@ -30,7 +30,7 @@ class EncryptedGroupsApp extends PolymerElement {
       <div class="container flex-horizontal-with-ratios">
         <div class="flexchild">
           <paper-input id="user-input" value="{{user}}" label="Current User" always-float-label required auto-validate error-message="User field cannot be empty!"></paper-input>
-          <add-to-group-element></add-to-group-element>
+          <group-manager-element></group-manager-element>
         </div>
         <div class="flex2child">
           <center-element current-user="[[user]]"></center-element>

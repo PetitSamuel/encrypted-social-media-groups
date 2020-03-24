@@ -98,6 +98,43 @@ exports.post_group = async function (req, res) {
     res.status(200).json(updatedGroup);
 };
 
+/*
+    Remove a member from a group.
+*/
+exports.remove_group = async function (req, res) {
+    let params = req.params;
+    if (!params) {
+        res.status(400).json({ "error": true, "message": "Invalid request." })
+        return;
+    }
+    if (!params.group) {
+        res.status(400).json({ "error": true, "message": "name is a required parameter." })
+        return;
+    }
+    if (!params.user) {
+        res.status(400).json({ "error": true, "message": "user is a required parameter." })
+        return;
+    }
+    let currentGroup = await db.GroupModel.findOne({ 'name': params.group });
+    // If no groups found, return
+    if (!currentGroup || !currentGroup.members) {
+        res.status(200).json({ "message": "success" });
+        return;
+    }
+    const index = currentGroup.members.indexOf(params.user);
+    if (index === -1) {
+        res.status(200).json({ "message": "success" });
+        return;
+    }
+    currentGroup.members.splice(index, 1);
+    const updatedGroup = await currentGroup.save();
+    if (updatedGroup !== currentGroup) {
+        res.status(400).json({ "error": true, "message": "Error when saving to db.", "details": updatedGroup });
+        return;
+    }
+    res.status(200).json({ "message": "success" });
+};
+
 exports.get_group = async function (req, res) {
     try {
         let groups = await db.GroupModel.find({});
