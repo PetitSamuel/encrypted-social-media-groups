@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
 
 router.get('/api/post', db_api_controller.get_post);
 router.get('/api/group', db_api_controller.get_group);
+router.get('/api/post/:group', db_api_controller.get_post);
 
 router.post('/api/convert-csv-to-md', api_controller.convert_csv_to_md);
 router.post('/api/post', db_api_controller.post_post);

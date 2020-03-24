@@ -2,13 +2,16 @@ const db = require("../database")
 
 exports.post_post = function(req, res) {
     let params = req.body;
-    console.log(req);
     let insert = db.insertPost(params);
     res.json({ response: insert });
 };
 
 exports.get_post = function(req, res) {
-    db.PostModel.find({}, function (err, data) {
+    let queryParam = {};
+    if(req.params.group) {
+        queryParam = {'group': req.params.group};
+    }
+    db.PostModel.find(queryParam, function (err, data) {
         if (err) res.status(400).send({"error" : true, "message": err});
         res.json(data);
       });

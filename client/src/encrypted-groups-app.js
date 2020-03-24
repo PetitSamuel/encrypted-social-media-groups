@@ -38,6 +38,7 @@ class EncryptedGroupsApp extends PolymerElement {
     return {
       user: {
         type: String,
+        value: 'sam',
       }
     };
   }

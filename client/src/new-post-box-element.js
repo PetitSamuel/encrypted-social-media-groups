@@ -27,9 +27,8 @@ class NewtPostInputElement extends PolymerElement {
       </style>
       <paper-textarea label="New Post" id="new-post-text" value="{{post}}" always-float-label max-rows="4" required auto-validate error-message="Post cannot be empty!"></paper-textarea>
       <paper-input id="group-input" value="{{group}}" label="Group" always-float-label></paper-input>
-      <paper-button raised on-click="clickHandler" id="new-post-button">Submit</paper-button>
-      <paper-button raised on-click="loadPostsFromServer">refresh</paper-button>
-      <paper-spinner active id="loadingFeed"></paper-spinner>
+      <paper-button raised on-click="clickHandler" id="new-post-button"><paper-spinner id="postingPost"></paper-spinner>Submit</paper-button>
+      <paper-button raised on-click="loadPostsFromServer"><paper-spinner id="loadingFeed"></paper-spinner>Refresh</paper-button>
     `;
   }
   ready() {
@@ -45,7 +44,7 @@ class NewtPostInputElement extends PolymerElement {
       },
       group: {
         type: String,
-        value: '',
+        value: 'test',
       },
       posts: {
         type: Array,
@@ -57,34 +56,67 @@ class NewtPostInputElement extends PolymerElement {
     };
   }
   async loadPostsFromServer() {
+    this.toggleFeedLoading();
     this.posts = [];
-    this.toggleLoading();
-    let res = await fetch('http://localhost:5000/api/post', {
+
+    let res = await fetch(`http://localhost:5000/api/post/${this.group}`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json"
       }
     });
+
     if (res.status !== 200) {
-      console.log(res);
-      this.toggleLoading();
+      this.toggleFeedLoading();
+      alert("An error occured: " + JSON.stringify(res));
       return;
     }
+
     let data = await res.json();
+    this.toggleFeedLoading();
     this.posts = responseToPostArray(data);
-    this.toggleLoading();
   }
 
-  async clickHandler() {
+  // new post to local var
+  updateLocalVariables() {
+    if(!this.user) {
+      alert("user field cannot be empty.");
+      return false;
+    }
+    if(!this.post) {
+      alert("post field cannot be empty.");
+      return false;
+    }
+    if(!this.group) {
+      alert("group field cannot be empty.");
+      return false;
+    }
+
     let tmp = this.posts;
     tmp.push({
       author: this.user,
       post: this.post,
       group: this.group,
     });
+
+    // trick to force dom-repeat to re render
     this.posts = [];
     this.posts = tmp;
 
+    return true;
+  }
+
+  async clickHandler() {
+    this.togglePostingLoading();
+    let status = this.updateLocalVariables();
+
+    // not all fields are populated
+    if(status === false) {
+      this.togglePostingLoading();
+      return;
+    }
+
+    // post to backend if full
     let response = await fetch('http://localhost:5000/api/post', {
       method: 'POST',
       headers: {
@@ -97,18 +129,22 @@ class NewtPostInputElement extends PolymerElement {
       })
     });
     if (response.status !== 200) {
-      console.log(response);
+      this.togglePostingLoading();
+      alert("An error occured: status" + response.status);
       return;
     }
     let data = await response.json();
-    console.log(data);
+    this.togglePostingLoading();
   }
 
-  toggleLoading() {
+  toggleFeedLoading() {
     let spinner = this.$.loadingFeed;
     spinner.active = !spinner.active;
   }
-
+  togglePostingLoading() {
+    let spinner = this.$.postingPost;
+    spinner.active = !spinner.active;
+  }
 }
 
 window.customElements.define('new-post-box-element', NewtPostInputElement);
