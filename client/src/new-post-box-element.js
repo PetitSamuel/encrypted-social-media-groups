@@ -30,7 +30,6 @@ class NewtPostInputElement extends PolymerElement {
       <paper-button raised on-click="clickHandler" id="new-post-button">Submit</paper-button>
       <paper-button raised on-click="loadPostsFromServer">refresh</paper-button>
       <paper-spinner active id="loadingFeed"></paper-spinner>
-
     `;
   }
   ready() {
@@ -55,16 +54,11 @@ class NewtPostInputElement extends PolymerElement {
       user: {
         type: String
       },
-      // todo : implement loading bar
-      isLoadingPosts: {
-        type: Boolean,
-        value: false,
-      }
     };
   }
   async loadPostsFromServer() {
     this.posts = [];
-    this.toggle();
+    this.toggleLoading();
     let res = await fetch('http://localhost:5000/api/post', {
       method: 'GET',
       headers: {
@@ -73,19 +67,15 @@ class NewtPostInputElement extends PolymerElement {
     });
     if (res.status !== 200) {
       console.log(res);
-      this.toggle();
+      this.toggleLoading();
       return;
-      // Do something there if a error response came from the server
     }
     let data = await res.json();
-    console.log(data);
-    console.log(data);
     this.posts = responseToPostArray(data);
-    this.toggle();
+    this.toggleLoading();
   }
 
   async clickHandler() {
-    // for some reason for the dom-repeat to update we need to reset posts
     let tmp = this.posts;
     tmp.push({
       author: this.user,
@@ -109,12 +99,12 @@ class NewtPostInputElement extends PolymerElement {
     if (response.status !== 200) {
       console.log(response);
       return;
-      // Do something there if a error response came from the server
     }
     let data = await response.json();
     console.log(data);
   }
-  toggle() {
+
+  toggleLoading() {
     let spinner = this.$.loadingFeed;
     spinner.active = !spinner.active;
   }
