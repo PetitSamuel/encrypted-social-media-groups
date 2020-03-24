@@ -29,6 +29,7 @@ class NewtPostInputElement extends PolymerElement {
       <paper-input id="group-input" value="{{group}}" label="Group" always-float-label></paper-input>
       <paper-button raised on-click="clickHandler" id="new-post-button">Submit</paper-button>
       <paper-button raised on-click="loadPostsFromServer">refresh</paper-button>
+      <paper-spinner active id="loadingFeed"></paper-spinner>
     `;
   }
   ready() {
@@ -53,14 +54,11 @@ class NewtPostInputElement extends PolymerElement {
       user: {
         type: String
       },
-      isLoadingPosts: {
-        type: Boolean,
-        value: false,
-      }
     };
   }
   async loadPostsFromServer() {
-    let arr = [];
+    this.posts = [];
+    this.toggleLoading();
     let res = await fetch('http://localhost:5000/api/post', {
       method: 'GET',
       headers: {
@@ -69,16 +67,15 @@ class NewtPostInputElement extends PolymerElement {
     });
     if (res.status !== 200) {
       console.log(res);
-      // Do something there if a error response came from the server
+      this.toggleLoading();
+      return;
     }
     let data = await res.json();
-    console.log(data);
-    console.log(data);
-    arr = responseToPostArray(data);
-    this.posts = arr;
+    this.posts = responseToPostArray(data);
+    this.toggleLoading();
   }
+
   async clickHandler() {
-    // for some reason for the dom-repeat to update we need to reset posts
     let tmp = this.posts;
     tmp.push({
       author: this.user,
@@ -102,12 +99,15 @@ class NewtPostInputElement extends PolymerElement {
     if (response.status !== 200) {
       console.log(response);
       return;
-      // Do something there if a error response came from the server
     }
     let data = await response.json();
     console.log(data);
   }
 
+  toggleLoading() {
+    let spinner = this.$.loadingFeed;
+    spinner.active = !spinner.active;
+  }
 
 }
 

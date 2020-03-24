@@ -41,22 +41,15 @@ const PostModel = mongoose.model('posts', postSchema);
 const GroupModel = mongoose.model('groups', groupSchema);
 
 function insertPost(post) {
-    // new instance
-    console.log("hello bro");
     var newPost = new PostModel(post);
-    // save to db
     newPost.save(function (err, data) {
-        console.log(err);
-        console.log(data);
         if (err) return err;
         return true;
     });
 }
 
 function insertGroup(group) {
-    // new instance
     var newGroup = new GroupModel(group);
-    // save to db
     newGroup.save(function (err, data) {
         if (err) return err;
         return true;
