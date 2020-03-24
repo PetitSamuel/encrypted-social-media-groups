@@ -1,4 +1,4 @@
-import {html, PolymerElement} from '@polymer/polymer/polymer-element.js';
+import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import '@polymer/paper-button/paper-button.js';
 import '@polymer/paper-input/paper-input.js';
 import '@polymer/iron-autogrow-textarea/iron-autogrow-textarea.js';
@@ -28,7 +28,7 @@ class NewtPostInputElement extends PolymerElement {
       <iron-autogrow-textarea rows="4" id="new-post-text" placeholder="New Post" value="{{post}}"></iron-autogrow-textarea>
       <paper-input id="group-input" value="{{group}}" label="Group" always-float-label></paper-input>
       <paper-button raised on-click="clickHandler" id="new-post-button">Submit</paper-button>
-      <paper-button raised on-click="test">refresh</paper-button>
+      <paper-button raised on-click="loadPostsFromServer">refresh</paper-button>
     `;
   }
   static get properties() {
@@ -61,6 +61,52 @@ class NewtPostInputElement extends PolymerElement {
     });
     this.posts = [];
     this.posts = tmp;
+
+    fetch('http://localhost:5000/api/post', {
+      method: 'POST',
+      headers: { 
+        "Content-Type": "application/json" 
+      },
+      body: JSON.stringify({
+          user: this.user,
+          group: this.group,
+          text: this.post,
+        })
+      })
+      .then(function (response) {
+        if (response.status !== 200) {
+          console.log(response);
+          // Do something there if a error response came from the server
+        }
+        console.log(response.status);
+        // 'json()' returns a promise
+        return response.json();
+      })
+      .then(function (jsonObject) {
+        console.log(jsonObject);
+        // Do something there with the response.
+      });
+  }
+
+  loadPostsFromServer() {
+    fetch('http://localhost:5000/api/post', {
+      method: 'GET',
+      headers: { 
+        "Content-Type": "application/json" 
+      }})
+      .then(function (response) {
+        if (response.status !== 200) {
+          console.log(response);
+          // Do something there if a error response came from the server
+        }
+        console.log(response.status);
+        // 'json()' returns a promise
+        return response.json();
+      })
+      .then(function (jsonObject) {
+        console.log(jsonObject);
+        // Do something there with the response.
+      });
   }
 }
 
