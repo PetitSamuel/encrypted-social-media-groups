@@ -1,6 +1,8 @@
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
+import '@polymer/paper-input/paper-input.js';
 import './center-element'
+import './add-to-group-element';
 /**
  * @customElement
  * @polymer
@@ -13,6 +15,7 @@ class EncryptedGroupsApp extends PolymerElement {
         margin-left: 16px;
         width: 50%;
         --primary-text-color: #01579B;
+        margin-bottom: 16px;
     }
         .flex-horizontal-with-ratios {
           @apply --layout-horizontal;
@@ -27,7 +30,8 @@ class EncryptedGroupsApp extends PolymerElement {
       <div class="container flex-horizontal-with-ratios">
         <div class="flexchild">
     <paper-input id="user-input" value="{{user}}" label="Current User" always-float-label required auto-validate error-message="User field cannot be empty!"></paper-input>
-        </div>
+        <add-to-group-element></add-to-group-element>
+    </div>
         <div class="flex2child">
           <center-element current-user="[[user]]"></center-element>
         </div>
