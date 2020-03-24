@@ -79,30 +79,26 @@ class NewtPostInputElement extends PolymerElement {
 
   // new post to local var
   updateLocalVariables() {
-    if(!this.user) {
+    if (!this.user) {
       alert("user field cannot be empty.");
       return false;
     }
-    if(!this.post) {
+    if (!this.post) {
       alert("post field cannot be empty.");
       return false;
     }
-    if(!this.group) {
+    if (!this.group) {
       alert("group field cannot be empty.");
       return false;
     }
 
     let tmp = this.posts;
-    tmp.push({
+    // trick to force dom-repeat to re render is to assign posts a new array
+    this.posts = [{
       author: this.user,
       post: this.post,
       group: this.group,
-    });
-
-    // trick to force dom-repeat to re render
-    this.posts = [];
-    this.posts = tmp;
-
+    }].concat(tmp);
     return true;
   }
 
@@ -111,7 +107,7 @@ class NewtPostInputElement extends PolymerElement {
     let status = this.updateLocalVariables();
 
     // not all fields are populated
-    if(status === false) {
+    if (status === false) {
       this.togglePostingLoading();
       return;
     }

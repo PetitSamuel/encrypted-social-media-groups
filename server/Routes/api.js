@@ -44,7 +44,7 @@ exports.get_post = async function (req, res) {
         queryParam = { 'group': req.params.group };
     }
     try {
-        let posts = await db.PostModel.find(queryParam);
+        let posts = await db.PostModel.find(queryParam).sort({postedAt: 'descending'});
         res.status(200).json(posts);
         return;
     } catch (err) {
