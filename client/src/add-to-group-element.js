@@ -39,24 +39,39 @@ class AddToGroupElement extends PolymerElement {
         return {
             user: {
                 type: String,
-                value: '',
+                value: 'sam',
             },
             group: {
                 type: String,
-                value: '',
+                value: 'sam',
             }
         };
     }
 
-    handleAddToGroup() {
+    async handleAddToGroup() {
         this.$.userInput.validate();
         this.$.groupInput.validate();
-        if(!this.user || !this.group) {
+        if (!this.user || !this.group) {
             // if inputs aren't valid, show error messages & return
             return;
         }
-
-        
+        let response = await fetch('http://localhost:5000/api/group', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: this.group,
+                user: this.user,
+            }),
+        });
+        if (response.status !== 200) {
+            alert("An error occured: status" + response.status);
+            return;
+        }
+        console.log(`User ${this.user} succesfully added to group ${this.group}.`);
+        this.clearInputs();
+        this.closeDialog();
     }
 
     clearInputs() {

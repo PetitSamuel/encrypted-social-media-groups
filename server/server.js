@@ -1,8 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 var router = express.Router();
-const api_controller = require("./Routes/api")
-var db_api_controller = require('./Routes/db_api');
+var api_controller = require('./Routes/api');
 require('dotenv').config()
 
 // for now not using docker for the server
@@ -25,19 +24,18 @@ app.get('/', (req, res) => {
     res.status(200).send("Hey");
 });
 
-router.get('/api/post', db_api_controller.get_post);
-router.get('/api/group', db_api_controller.get_group);
-router.get('/api/post/:group', db_api_controller.get_post);
+router.get('/api/post', api_controller.get_post);
+router.get('/api/post/:group', api_controller.get_post);
+router.get('/api/group', api_controller.get_group);
 
-router.post('/api/convert-csv-to-md', api_controller.convert_csv_to_md);
-router.post('/api/post', db_api_controller.post_post);
-router.post('/api/group', db_api_controller.post_group);
+router.post('/api/post', api_controller.post_post);
+router.post('/api/group', api_controller.post_group);
 
 app.use('/', router);
 
 // all other endpoints are 404s
-app.use(function(req, res, next){
-    res.status(404).send('Not found');
+app.use(function (req, res, next) {
+    res.status(404).json({"error": "404 - Not Found"});
 });
 
 app.listen(SERVER_PORT, () => console.log('Server started on ' + SERVER_PORT));

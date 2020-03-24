@@ -26,7 +26,7 @@ class NewtPostInputElement extends PolymerElement {
       }
       </style>
       <paper-textarea label="New Post" id="new-post-text" value="{{post}}" always-float-label max-rows="4" required auto-validate error-message="Post cannot be empty!"></paper-textarea>
-      <paper-input id="group-input" value="{{group}}" label="Group" always-float-label required auto-validate error-message="Group field cannot be empty!"></paper-input>
+      <paper-input id="group-input" value="{{group}}" label="Group" always-float-label></paper-input>
       <paper-button raised on-click="clickHandler" id="new-post-button"><paper-spinner id="postingPost"></paper-spinner>Submit</paper-button>
       <paper-button raised on-click="loadPostsFromServer"><paper-spinner id="loadingFeed"></paper-spinner>Refresh</paper-button>
     `;

@@ -28,6 +28,9 @@ class FeedItemElement extends PolymerElement {
         margin-bottom: 8px;
     }
     </style>
+    <div hidden$="{{hide}}">
+      <h3>No posts to dislay!</h3>
+    </div>
     <div class="feed-item-container">
         <dom-repeat items="{{posts}}">
         <template>
@@ -54,7 +57,18 @@ class FeedItemElement extends PolymerElement {
       posts: {
         type: Array,
       },
+      hide: {
+        type: Boolean,
+        computed: 'shouldHide(posts)'
+      },
     };
+  }
+
+  shouldHide(posts) {
+    if(!posts || posts.length === 0) {
+      return false;
+    }
+    return true;
   }
 }
 

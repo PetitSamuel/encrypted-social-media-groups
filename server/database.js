@@ -17,10 +17,12 @@ var postSchema = new Schema({
     user: {
         type: String,
         required: true,
+        index: true,
     },
     group: {
         type: String,
         required: true,
+        index: true,
     },
     text: {
         type: String,
@@ -33,6 +35,8 @@ var groupSchema = new Schema({
     name: {
         type: String,
         required: true,
+        index: true,
+        unique: true
     },
     members: [String],
 });
@@ -40,25 +44,7 @@ var groupSchema = new Schema({
 const PostModel = mongoose.model('posts', postSchema);
 const GroupModel = mongoose.model('groups', groupSchema);
 
-function insertPost(post) {
-    var newPost = new PostModel(post);
-    newPost.save(function (err, data) {
-        if (err) return err;
-        return true;
-    });
-}
-
-function insertGroup(group) {
-    var newGroup = new GroupModel(group);
-    newGroup.save(function (err, data) {
-        if (err) return err;
-        return true;
-    });
-}
-
 module.exports = {
     PostModel: PostModel,
     GroupModel: GroupModel,
-    insertPost: insertPost,
-    insertGroup: insertGroup,
 }

@@ -29,9 +29,9 @@ class EncryptedGroupsApp extends PolymerElement {
       </style>
       <div class="container flex-horizontal-with-ratios">
         <div class="flexchild">
-    <paper-input id="user-input" value="{{user}}" label="Current User" always-float-label required auto-validate error-message="User field cannot be empty!"></paper-input>
-        <add-to-group-element></add-to-group-element>
-    </div>
+          <paper-input id="user-input" value="{{user}}" label="Current User" always-float-label required auto-validate error-message="User field cannot be empty!"></paper-input>
+          <add-to-group-element></add-to-group-element>
+        </div>
         <div class="flex2child">
           <center-element current-user="[[user]]"></center-element>
         </div>
