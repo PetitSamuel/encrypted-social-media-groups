@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://user:password@localhost:27017/db', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 db.once('open', () => {
