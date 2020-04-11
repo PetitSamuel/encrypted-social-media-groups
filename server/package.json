@@ -1,21 +1,21 @@
 {
-    "name": "training-interface",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-      "body-parser": "^1.19.0",
-      "cors": "^2.8.5",
-      "dotenv": "^8.2.0",
-      "express": "^4.17.1",
-      "mongoose": "^5.9.6"
-    },
-    "scripts": {
-      "start": "nodemon server.js"
-    },
-    "description": "This is a simple express backend.",
-    "main": "server.js",
-    "devDependencies": {},
-    "author": "",
-    "license": "ISC"
-  }
-  
+  "name": "training-interface",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "hybrid-crypto-js": "^0.2.2",
+    "mongoose": "^5.9.6"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "description": "This is a simple express backend.",
+  "main": "server.js",
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC"
+}
