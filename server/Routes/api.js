@@ -1,5 +1,5 @@
 const db = require("../database")
-const key = require('../encryption');
+const encrypt = require('../encryption');
 
 exports.post_submission = async function (req, res) {
     let params = req.body;
@@ -25,9 +25,9 @@ exports.post_submission = async function (req, res) {
         return;
     }
     const publicKeys = getGroupPublicKeys(group);
-    const privateKey = await key.getUserPrivateKey(params.user);
-    const signature = key.getSignature(privateKey, params.text);
-    const message = key.encryptMessageWithSignature(publicKeys, params.text, signature);
+    const privateKey = await encrypt.getUserPrivateKey(params.user);
+    const signature = encrypt.getSignature(privateKey, params.text);
+    const message = encrypt.encryptMessageWithSignature(publicKeys, params.text, signature);
     let post = new db.PostModel({
         user: params.user,
         group: params.group,
@@ -88,9 +88,9 @@ exports.get_post = async function (req, res) {
         res.status(400).send({ "error": true, "message": err });
         return;
     }
-    const privateKey = await key.getUserPrivateKey(username);
+    const privateKey = await encrypt.getUserPrivateKey(username);
     for (const post of posts) {
-        post.text = key.decryptMessage(privateKey, post.text).message;
+        post.text = encrypt.decryptMessage(privateKey, post.text).message;
     }
     res.status(200).json(posts);
     return;
@@ -113,7 +113,7 @@ exports.update_group = async function (req, res) {
     const username = params.username.toLowerCase();
     const groupName = params.group_name.toLowerCase();
     let currentGroup = await db.GroupModel.findOne({ 'name': groupName });
-    const userPublicKey = await key.getUserPublicKey(username);
+    const userPublicKey = await encrypt.getUserPublicKey(username);
     // If no groups found, make a new one
     if (!currentGroup) {
         const tmpGroup = new db.GroupModel({
