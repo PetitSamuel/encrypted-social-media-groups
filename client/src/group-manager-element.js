@@ -84,8 +84,8 @@ class GroupManagerElement extends PolymerElement {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name: this.group,
-                user: this.user,
+                group_name: this.group,
+                username: this.user,
             }),
         });
         if (response.status !== 200) {

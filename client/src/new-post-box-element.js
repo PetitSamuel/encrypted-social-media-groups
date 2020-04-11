@@ -30,7 +30,7 @@ class NewtPostInputElement extends PolymerElement {
       <paper-button raised on-click="clickHandler" id="new-post-button"><paper-spinner id="postingPost"></paper-spinner>Submit</paper-button>
       <paper-button raised on-click="resetAndLoad"><paper-spinner id="loadingFeed"></paper-spinner>Refresh</paper-button>
       <paper-button raised on-click="loadPostsFromServer">Load more</paper-button>
-      <h2>Currently in group [[currentGroup]]</h2>
+      <h2>[[displayedGroupString]]</h2>
       `;
   }
   ready() {
@@ -51,6 +51,10 @@ class NewtPostInputElement extends PolymerElement {
         type: String,
         value: '',
       },
+      displayedGroupString: {
+        type: String,
+        computed: 'computeCurrentGroup(currentGroup)'
+      },
       posts: {
         type: Array,
         notify: true,
@@ -68,6 +72,11 @@ class NewtPostInputElement extends PolymerElement {
       }
     };
   }
+
+  computeCurrentGroup(currentGroup) {
+    if (!currentGroup) return 'Loading all posts';
+    return `Loading posts from ${currentGroup}`;
+  }
   resetAndLoad() {
     this.offset = 0;
     this.posts = [];
@@ -76,8 +85,12 @@ class NewtPostInputElement extends PolymerElement {
   }
 
   async loadPostsFromServer() {
+    if (!this.user) {
+      alert("A user must be specified to load posts!");
+      return;
+    }
     this.toggleFeedLoading();
-    let res = await fetch(`http://localhost:5000/api/post/${this.currentGroup}?limit=${this.limit}&offset=${this.offset}`, {
+    let res = await fetch(`http://localhost:5000/api/post/${this.currentGroup}?limit=${this.limit}&offset=${this.offset}&user=${this.user}`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json"
@@ -141,7 +154,16 @@ class NewtPostInputElement extends PolymerElement {
         text: this.post,
       })
     });
-    if (response.status !== 200) {
+    if (response.status === 400) {
+
+      let data = await response.json();
+      if (data.message === 'Cannot post in a group user is not it.') {
+        alert('User cannot post in a group he is not in!');
+        this.togglePostingLoading();
+        return;
+      }
+    }
+    else if (response.status !== 200) {
       this.togglePostingLoading();
       alert("An error occured: status" + response.status);
       return;

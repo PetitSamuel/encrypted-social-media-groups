@@ -38,13 +38,51 @@ var groupSchema = new Schema({
         index: true,
         unique: true
     },
-    members: [String],
+    members: [{
+        name: {
+            type: String,
+            required: true,
+        },
+        public_key: {
+            type: String,
+            required: true,
+        }
+    }],
 });
 
+var userSchema = new Schema({
+    username: {
+        type: String,
+        required: true,
+        index: true,
+        unique: true
+    },
+    public_key: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    private_key: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+});
+
+async function getUserByUsername(username) {
+    return await UserModel.findOne({ username: username });
+}
+async function getGroupUsers(groupName) {
+    return await GroupModel.findOne({ name: groupName });
+}
 const PostModel = mongoose.model('posts', postSchema);
 const GroupModel = mongoose.model('groups', groupSchema);
+const UserModel = mongoose.model('users', userSchema);
 
 module.exports = {
     PostModel: PostModel,
     GroupModel: GroupModel,
+    UserModel: UserModel,
+    getUserByUsername: getUserByUsername,
+    getGroupUsers: getGroupUsers,
 }
