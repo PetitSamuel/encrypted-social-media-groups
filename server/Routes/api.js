@@ -89,10 +89,28 @@ exports.get_post = async function (req, res) {
         return;
     }
     const privateKey = await encrypt.getUserPrivateKey(username);
-    for (const post of posts) {
-        post.text = encrypt.decryptMessage(privateKey, post.text).message;
+    const verifiedPosts = [];
+    for (let post of posts) {
+        const decrypted = encrypt.decryptMessage(privateKey, post.text);
+        let verified = false;
+        if (decrypted.signature) {
+            const issuerPublicKey = await encrypt.getUserPublicKey(post.user);
+            verified = encrypt.verifySignature(
+                issuerPublicKey,
+                decrypted.signature,
+                decrypted.message,
+            );
+        }
+        verifiedPosts.push({
+            user: post.user,
+            group: post.group,
+            text: decrypted.message,
+            postedAt: post.postedAt,
+            verified: verified,
+        });
     }
-    res.status(200).json(posts);
+
+    res.status(200).json(verifiedPosts);
     return;
 }
 

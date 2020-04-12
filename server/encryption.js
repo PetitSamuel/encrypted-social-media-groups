@@ -65,3 +65,11 @@ exports.decryptMessage = function decryptMessage(privateKey, encrypted) {
 exports.getSignature = function getSignature(privateKey, message) {
     return crypt.signature(privateKey, message);
 }
+
+exports.verifySignature = function verifySignature(publicKey, signature, message) {
+    return crypt.verify(
+        publicKey,
+        signature,
+        message,
+    );
+}
