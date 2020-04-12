@@ -154,14 +154,11 @@ class NewtPostInputElement extends PolymerElement {
         text: this.post,
       })
     });
-    if (response.status === 400) {
+    if (response.status === 401) {
+      alert('User cannot post in a group he is not in!');
+      this.togglePostingLoading();
+      return;
 
-      let data = await response.json();
-      if (data.message === 'Cannot post in a group user is not it.') {
-        alert('User cannot post in a group he is not in!');
-        this.togglePostingLoading();
-        return;
-      }
     }
     else if (response.status !== 200) {
       this.togglePostingLoading();

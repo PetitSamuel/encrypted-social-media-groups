@@ -21,7 +21,7 @@ exports.post_submission = async function (req, res) {
     }
     const group = await db.getGroupUsers(params.group);
     if (!isUserInGroup(group, params.user)) {
-        res.status(400).json({ "error": true, "message": "Cannot post in a group user is not it." });
+        res.status(401).json({ "error": true, "message": "Cannot post in a group user is not it." });
         return;
     }
     const publicKeys = getGroupPublicKeys(group);
